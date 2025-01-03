@@ -1,0 +1,38 @@
+class Solution {
+    private:
+    vector<vector<int>> rects;
+    vector<int> areas; // Cumulative areas of rectangles
+    int totalArea;
+public:
+    Solution(vector<vector<int>>& rects) {
+        this->rects = rects;
+        totalArea = 0;
+
+        // Compute areas and cumulative sum of areas
+        for (auto& rect : rects) {
+            int width = rect[2] - rect[0] + 1;
+            int height = rect[3] - rect[1] + 1;
+            totalArea += width * height;
+            areas.push_back(totalArea);
+        }
+    }
+
+    vector<int> pick() {
+        // Step 1: Pick a rectangle using the area-weighted probability
+        int randArea = rand() % totalArea; // Random value in [0, totalArea)
+        int rectIndex = lower_bound(areas.begin(), areas.end(), randArea + 1) - areas.begin();
+
+        // Step 2: Pick a random point inside the chosen rectangle
+        auto& rect = rects[rectIndex];
+        int x = rect[0] + rand() % (rect[2] - rect[0] + 1);
+        int y = rect[1] + rand() % (rect[3] - rect[1] + 1);
+
+        return {x, y};
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(rects);
+ * vector<int> param_1 = obj->pick();
+ */
